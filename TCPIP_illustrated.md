@@ -36,6 +36,33 @@
 
 + **STP**: (Spanning Tree Protocol) 生成树协议（由每个交换机实现）
 
+  **RSTP**: (Rapid Spanning Tree Protocol )
+
   > 下面这种拓扑结构在交换机学习的过程中会产生广播风暴，所以使用生成树协议打破闭环，生成唯一一条路径，任何站点可以通过该路径达到任何一个站点。生成树路径可以有很多条，但是通过各链路的带宽选择性能最高的一条。下面黑线加粗的部分就是一条生成树路径，路径上的端口可以转发分组，其他端口都被阻塞。
 
   ![](./images/STP.png)
+
++ **MRP**: (Multiple Registration Protocol) 有``MVRP (for registering VLANs) ``和 ``MMRP  (for  registering  group  MAC  addresses)``两种应用， MCRP处理一个新站加入VLAN的情况，避免STP被重新计算。MMRP是为站点注册他们的多播组，以便交换机准确转发多播信息。
+
+  > MMRP  is  a  method  for  stations  to  register  their  interest  in  group  MAC addresses  (multicast  addresses). 
+
++  **WLAN(WI-FI)**:  下面是架构图
+
+  ​	![](./images/wlan_bss.png)
+
+  ​		有很多种数据帧格式，下面是通用的一种，有些字段在不同类型的数据帧中可能有所不同
+
+  ![](./images/wlan_frame.png)
+
+  + **Frame Ctrl**: (Frame  Control  Word) 标定帧的类型，有三种：``management frames`` `` control frames`` ``data  frames`` 每种类型都有一些子类型
+
+  + **Management Frames **:  管理``station`` 和 ``access points`` 之间联系的建立维持和结束,以及其他的一些控制信息
+
+    > 一个WI-FI接口扫描附近可用的网络(access apoints)时，就是在发送特定的``Management Frames``
+
+  + **Control Frames**: RTS/CTS and ACK
+
+    当站点之间要传输的``packages`` 大小超过一个阈值时，会启用流量控制。 ``Sender``在发送数据之前先发送一个``RTS(request-to-send)`` ,如果``recipient`` 可以接收，则返回一个``CTS(clear-to-send)``
+
+    ``ACK(retransmission/acknowledgment)``用来重传确认（仅适用于单播）。如果发送方没有在一定时间内收到``ACK``,就会触发重传机制。重传的数据的 ``Frame Ctrl`` 内设置一个``Retry bit``
+
