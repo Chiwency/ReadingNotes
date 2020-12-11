@@ -64,5 +64,7 @@
 
     当站点之间要传输的``packages`` 大小超过一个阈值时，会启用流量控制。 ``Sender``在发送数据之前先发送一个``RTS(request-to-send)`` ,如果``recipient`` 可以接收，则返回一个``CTS(clear-to-send)``
 
-    ``ACK(retransmission/acknowledgment)``用来重传确认（仅适用于单播）。如果发送方没有在一定时间内收到``ACK``,就会触发重传机制。重传的数据的 ``Frame Ctrl`` 内设置一个``Retry bit``
+    ``ACK(retransmission/acknowledgment)``用来重传确认（仅适用于单播s）。如果发送方没有在一定时间内收到``ACK``,就会触发重传机制。重传的数据的 ``Frame Ctrl`` 内设置一个``Retry bit``
+    
+  + **Data Frames, Fragmentation, and Aggregation**: Data Frames 就是传输数据的帧。 而且协议支持对帧分片。如果每个比特出现差错的概率是相同的，那么越大的帧出错的概率越大，重传次数就越多，所以分片可以降低单片传输差错，而且降低重传开销。协议还支持帧聚合(有两种模式)，对发往同一个地点的帧组装起来一起发送.而且每个子帧有自己的FCS(循环冗余码检测)，所以如果帧出错可以只重发出错的子帧(针对A-MPDU,A-MSDU则没有这个功能)。帧聚合在比特差错少的信道中表现良好.
 
