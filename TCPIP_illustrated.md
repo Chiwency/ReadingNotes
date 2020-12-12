@@ -67,4 +67,13 @@
     ``ACK(retransmission/acknowledgment)``用来重传确认（仅适用于单播s）。如果发送方没有在一定时间内收到``ACK``,就会触发重传机制。重传的数据的 ``Frame Ctrl`` 内设置一个``Retry bit``
     
   + **Data Frames, Fragmentation, and Aggregation**: Data Frames 就是传输数据的帧。 而且协议支持对帧分片。如果每个比特出现差错的概率是相同的，那么越大的帧出错的概率越大，重传次数就越多，所以分片可以降低单片传输差错，而且降低重传开销。协议还支持帧聚合(有两种模式)，对发往同一个地点的帧组装起来一起发送.而且每个子帧有自己的FCS(循环冗余码检测)，所以如果帧出错可以只重发出错的子帧(针对A-MPDU,A-MSDU则没有这个功能)。帧聚合在比特差错少的信道中表现良好.
+  
++ **PSM/TSF**: (Power Save Mode/Tme Sync Function) 在无线网中，接收站（如手机）的网卡会持续运行以接收信号，接收站可以进入省电模式，AP为它缓存帧数据，每过一段时间AP向其发送``beacon  frames `` ，通知接收站，接收站决定是否接收缓存的帧. TSF是用来同步站点和AP之间的时间，以保证AP在正确的时间唤醒站点检查缓存的帧。 除此之外，还有许多其他的省电技术。
 
++ **Virtual Carrier Sense**: 虚拟载波监听通过每个站点设置一个计时器，``Network  Allocation  Vector (NAV) `` 。发送器在发送``RTS/CTS`` 帧时设置一个持续时间（`Duration`）。站点持续监听这两种帧，取出`Duration` 值与`NAV` 比较，如果大于`NAV` 的值，曾更新`NAV`, `NAV` 会随时间衰减，为0时则代表信道空闲，可以发送
+
++ **Physical Carrier Sense**： 物理方法实现载波监听，通过clear channel assessment（CCA），监听信道中的能量和波形来判定信道是否空闲。通常与`NAV` 一起使用
+
++ **DCF Collision Avoidence** : (distributed  coordinating  function): 因为对于无线设备，很难在发送的同时进行碰撞检测（以太网就是这样干的，所以叫CSMA/CD），所以一般采用碰撞避免（CSMA/CA）。站点想要发送数据前等待一个``DIFS (distributed inter-frame  space)`` 时间来让高优先级的站点使用信道。在这个时间内检测到信道繁忙（这个时候进行载波监听），则再等一段`DIFS`时间. 如果检测到信道空闲，发送方执行碰撞避免程序，和以太网退避程序一样，等待一个随机时间后发送。
+
+  >  当站点正确接收数据帧后，等待一个`SIFS (Short Interframe Space)` 时间后发送`ACK` 信息（没有碰撞避免程序），`SIFS`的时间比` DIFS` 短，以此实现`ACK` 信息有更高的发送优先级。
